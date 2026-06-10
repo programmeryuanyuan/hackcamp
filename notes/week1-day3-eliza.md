@@ -63,6 +63,62 @@ graph TD
 
 3. **createMemory 是唯一的 Secret 脱敏关口**：所有需要持久化的内容都必须经过 `createMemory()`，该函数内强制调用 `redactWithSecrets()` 完成脱敏后再写 DB，将"安全责任"收束到单一入口而非散落在各处。AutoArb 中可用同样模式封装 `saveTradeRecord()`，把私钥、API key 的脱敏逻辑绑定到唯一的持久化函数里，防止链上操作日志或 DB 泄露敏感信息。代码位置：`/packages/core/src/runtime.ts: createMemory()` line 8287。
 
+## 7. AgentRuntime × PlannerLoop 交互序列图
+
+> 聚焦关键路径中最核心的两个模块：`AgentRuntime`（orchestrator）与 `PlannerLoop`（executor），以及它们共同依赖的 `Memory` 和 `Plugin/Action` 层。
+
+```mermaid
+sequenceDiagram
+    participant Client as HTTP Client
+    participant Routes as agent-routes.ts<br/>handleAgentMessage()
+    participant Runtime as AgentRuntime<br/>runtime.ts
+    participant MH as MessageHandler<br/>message-handler.ts
+    participant PL as PlannerLoop<br/>planner-loop.ts
+    participant ETC as executeToolCall<br/>execute-planned-tool-call.ts
+    participant Action as Plugin Action<br/>(e.g. wallet / polymarket)
+    participant Eval as Evaluator<br/>evaluator.ts
+    participant Mem as Memory + DB<br/>runtime.ts / database.ts
+
+    Client->>Routes: POST /api/agents/:id/message
+    Routes->>Runtime: composeState(message)
+    Runtime->>Mem: searchMemories(embedding) — 检索历史轨迹
+    Mem-->>Runtime: relevant memories[]
+    Runtime-->>Routes: State (providers + memories merged)
+
+    Routes->>MH: routeMessageHandlerOutput(state)
+    MH->>Runtime: useModel() — Stage 1 LLM 调用
+    Runtime-->>MH: route = "planning_needed"
+    MH-->>Routes: planning_needed
+
+    Routes->>PL: runPlannerLoop(context, tools, runtime)
+
+    loop 每一轮工具调用（最多 maxIterations 次）
+        PL->>Runtime: useModel(prompt + trajectory) — Stage 2 LLM
+        Runtime-->>PL: tool_call: { name, args }
+        PL->>ETC: executeToolCall(action, args, runtime)
+        ETC->>Action: action.handler(runtime, message, state)
+        Action-->>ETC: ActionResult { success, text, details }
+        ETC-->>PL: step recorded in trajectory
+    end
+
+    PL-->>Routes: PlannerLoopResult { trajectory, finalText }
+
+    Routes->>Eval: runEvaluator(plannerResult, runtime)
+    Eval->>Runtime: useModel() — Stage 3 验证
+    Eval->>Eval: applyEvaluatorEffects() — 后置副作用
+    Eval-->>Routes: EvaluatorOutput { passed, notes }
+
+    Routes->>Runtime: createMemory(resultMemory, "messages")
+    Runtime->>Runtime: redactWithSecrets() — secret 脱敏
+    Runtime->>Mem: adapter.createMemories([...]) — 写 DB
+    Mem-->>Runtime: UUID[]
+
+    Runtime-->>Routes: persisted memory id
+    Routes-->>Client: 200 { text: finalText, trajectory }
+
+    Note over Runtime,Mem: 下一轮请求的 composeState()<br/>会 searchMemories() 取回本次轨迹<br/>形成 self-improving 闭环
+```
+
 ## 6. 我的疑问 / 不确定的点
 
 - `planner-loop.ts` 的 `ChainingLoopConfig.maxIterations` 具体默认值是多少？超限后 LLM 是否会收到"已超限"的系统提示还是直接截断？
