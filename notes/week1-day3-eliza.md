@@ -63,7 +63,7 @@ graph TD
 
 3. **createMemory 是唯一的 Secret 脱敏关口**：所有需要持久化的内容都必须经过 `createMemory()`，该函数内强制调用 `redactWithSecrets()` 完成脱敏后再写 DB，将"安全责任"收束到单一入口而非散落在各处。AutoArb 中可用同样模式封装 `saveTradeRecord()`，把私钥、API key 的脱敏逻辑绑定到唯一的持久化函数里，防止链上操作日志或 DB 泄露敏感信息。代码位置：`/packages/core/src/runtime.ts: createMemory()` line 8287。
 
-## 7. AgentRuntime × PlannerLoop 交互序列图
+## 6. AgentRuntime × PlannerLoop 交互序列图
 
 > 聚焦关键路径中最核心的两个模块：`AgentRuntime`（orchestrator）与 `PlannerLoop`（executor），以及它们共同依赖的 `Memory` 和 `Plugin/Action` 层。
 
@@ -119,7 +119,7 @@ sequenceDiagram
     Note over Runtime,Mem: 下一轮请求的 composeState()<br/>会 searchMemories() 取回本次轨迹<br/>形成 self-improving 闭环
 ```
 
-## 6. 我的疑问 / 不确定的点
+## 7. 我的疑问 / 不确定的点
 
 - `planner-loop.ts` 的 `ChainingLoopConfig.maxIterations` 具体默认值是多少？超限后 LLM 是否会收到"已超限"的系统提示还是直接截断？
 - `plugin-farcaster` 插件的具体实现路径是什么？能否直接用 ElizaOS 的 Farcaster client 还是需要自己封装 `@neynar/nodejs-sdk`？
