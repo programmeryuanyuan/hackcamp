@@ -1,0 +1,339 @@
+❯ # Step 1                                                                  
+  帮我理解这个项目。@/Users/viann.luo/Hackcamp/eliza                        
+                                                                            
+  请用 Mermaid 画一张顶层架构图，要求：                                     
+  1. 只画 5-7 个核心模块，不要把每个文件都画进去                            
+  2. 模块之间用箭头表示数据流 / 调用方向                                    
+  3. 每个节点旁边标注对应的目录路径                                         
+  4. graph 方向用 TD（自上而下）                                            
+                                                                            
+  画完之后再用一段话总结：                                                  
+  - 这个项目最关键的一个抽象是什么                                          
+  - 它在工程上的"巧思"是什么（即使是新手也能学到的设计点）                  
+                                                                            
+  输出顺序：先 Mermaid 代码块，再文字总结。                                 
+                                                                            
+                                                                            
+  # Step 2 (基于 Step 1 输出)                                               
+                                                                            
+  基于刚才的架构图，挑出最具代表性的用户动作，给我做一次关键路径追踪。      
+  @/Users/viann.luo/Hackcamp/eliza                                          
+  你现在是一个极度严谨的代码架构分析师，完整梳理AutoArb从接收信号到完成一轮 
+  决策/执行的端到端主链路（包含 self-improving                              
+  闭环。AutoArb并无已提交的实现代码，链路按eliza                            
+  仓库中真实存在的函数梳理，不要使用技术规格文档中未实现的。                
+  从收到什么信号开始，查询什么，调用哪些工具，如何self-improving，如何与[链 
+  上 / 数据库 / 文件系统]交互。                                             
+                                                                            
+  按下面格式输出：                                                          
+                                                                            
+  1. [动作描述]                                                             
+  → [文件路径]: [函数名] （eliza中的！！）                                  
+  2. ...                                                                    
+                                                                            
+  额外要求：                                                                
+                                                                            
+  必须精确到函数名，不要写类名或文件概述。                                  
+                                                                            
+  必须覆盖以下所有环节：                                                    
+  信号/事件接收入口                                                         
+  配置加载 & 初始化                                                         
+  市场/链上数据查询                                                         
+  工具调用（链上交互、数据库、文件系统等）                                  
+  决策推理过程                                                              
+  执行下单/交易动作                                                         
+  执行结果确认 & 状态更新                                                   
+  Self-improving 环节（记忆、反思、参数优化、策略进化等）                   
+  日志/监控/持久化                                                          
+                                                                            
+                                                                            
+  优先使用真实存在的文件路径和函数名。如果不确定，可标注 “待确认”。         
+                                                                            
+                                                                            
+  要求：                                                                    
+  - 每一跳必须有文件路径 + 函数名（精确到函数）                             
+  - 如果某一跳是【异步】 / 【跨进程】的，明确标注                           
+  - 如果有错误处理分支，分主路径和异常分支两条线写                          
+                                                                            
+  写完后给我一个简短结论：整个链路里，最关键的一跳是哪一步？                
+  最关键的一跳：xxxx → [文件]:[函数]                                        
+  原因：...                                                                 
+                                                                            
+                                                                            
+  # Step 3 (基于 Step 2 输出)                                               
+  关键路径里，[选某一跳] 这个函数，做一次跨文件依赖分析。                   
+  @/Users/viann.luo/Hackcamp/eliza 分析 [文件 / 函数 / 接口] 的依赖关系。   
+                                                                            
+  请回答：                                                                  
+  1. 它直接 import / require 了哪些东西？                                   
+  2. 它被项目里哪些地方调用 / 引用？                                        
+  3. 如果我把它的 [入参 / 返回值 / 行为] 改成 [Y]，会有哪些地方需要同步改？ 
+  4. 项目里有没有"类似设计"的另一个 [文件 / 函数]，对比一下它们的差异？     
+                                                                            
+  按上面 4 个子问题分别回答，不要混在一起。                                 
+                                                                            
+                                                                            
+  # Step 4                                                                  
+  作为这次调研的总结，给我 3 个可以借鉴到自己 Web3 项目里的设计点。3        
+  个可借鉴设计点标注在源码的哪个位置。                                      
+                                                                            
+  不要泛泛而谈，每个设计点要：                                              
+  - 说清楚它解决了什么问题                                                  
+  - 说清楚怎么落地到一个新项目里                                            
+  - 标注它在这个项目里对应的代码位置                                        
+                                                                            
+  ⎿  Listed directory eliza/
+  ⎿  ⧉ Selected 29 lines from conversation-2026-06-10-010303.txt in Visual 
+     Studio Code
+
+⏺ Explore(Explore Eliza project structure)
+  ⎿  Done (32 tool uses · 108.1k tokens · 2m 0s)
+  (ctrl+o to expand)
+
+⏺ Step 1 — 顶层架构图
+
+  graph TD
+      CLI["CLI / HTTP Client\n/packages/agent/src/bin.ts"]
+      AGENT["Agent Bootstrap\n/packages/agent/src/runtime/eliza.ts\nstartEliza()
+   / bootElizaRuntime()"]
+      RUNTIME["AgentRuntime
+  (核心)\n/packages/core/src/runtime.ts\ncomposeState() / useModel()"]
+      PIPELINE["消息处理三阶段\n/packages/core/src/runtime/\nmessage-handler.ts
+  → planner-loop.ts → evaluator.ts"]
+      PLUGIN["Plugin
+  System\n/packages/core/src/plugin-lifecycle.ts\nregisterPlugin() /
+  unloadPlugin()"]
+      MEMORY["Memory / RAG\n/packages/core/src/memory.ts +
+  search.ts\ncreateMemory() / searchMemories()"]
+      DB["Database Adapter\n/packages/core/src/database.ts\nIDatabaseAdapter
+  (abstract)"]
+
+      CLI --> AGENT
+      AGENT --> RUNTIME
+      RUNTIME --> PIPELINE
+      RUNTIME --> PLUGIN
+      PIPELINE --> MEMORY
+      PIPELINE --> PLUGIN
+      MEMORY --> DB
+
+  最关键的一个抽象： AgentRuntime
+  是整个项目的"上帝对象"——它不直接做任何事，而是把所有能力（actions、providers、
+  services、evaluators、memory）都注册进来，然后通过三阶段
+  pipeline（message-handler → planner-loop → evaluator）按需调用。这使得 Eliza
+  可以用同一套运行时支持完全不同的 agent persona。
+
+  工程上的巧思： 消息处理被明确分成三个独立文件，每一跳的职责边界极其清晰——Stage
+   1 只决定"该怎么处理"，Stage 2 只负责"多轮工具调用循环"，Stage 3
+  只做"输出验证和副作用"。这种"管道式职责隔离"让每个环节可以独立测试、独立替换，
+  也是新手最值得学习的设计模式：不要把决策、执行、验证写在同一个函数里。
+
+  ---
+  Step 2 — 关键路径追踪（信号 → 决策 → Self-Improving）
+
+  === 主路径 ===
+
+  1. [HTTP 信号接收] (异步)
+     → /packages/agent/src/api/agent-routes.ts: handleAgentMessage()
+     - 解析 POST /api/agents/:id/message body
+     - 构造 Memory 对象
+
+  2. [构建上下文 State]
+     → /packages/core/src/runtime.ts: composeState()
+     - 遍历所有已注册 Providers，并行调用 provider.get()
+     - 合并成 State 对象（含历史 memories、当前 room 信息）
+
+  3. [Stage 1 路由判断]
+     → /packages/core/src/runtime/message-handler.ts:
+  routeMessageHandlerOutput()
+     - 调用 useModel() 做首轮 LLM 判断
+     - 返回 MessageHandlerRoute（ignored / simple_reply / planning_needed）
+
+  4. [Stage 2 规划循环] (关键跳，多轮工具调用)
+     → /packages/core/src/runtime/planner-loop.ts: runPlannerLoop()
+     - 内部调用 buildActionCatalog() 获取可用 actions
+     - 调用 validated-model-call.ts: validateModelCall() 执行 LLM
+     - 解析工具调用: response-grammar.ts: parseToolCallsFromResponse()
+     - 执行每个工具: execute-planned-tool-call.ts: executeToolCall()
+     - 记录轨迹: trajectory-recorder.ts: recordTrajectoryStep()
+     - 循环直到无工具调用
+
+  5. [链上 / 数据库 / 文件系统交互] (在 executeToolCall 内)
+     → /packages/core/src/runtime/execute-planned-tool-call.ts:
+  executeToolCall()
+     - action.handler(runtime, message, state) 调用具体插件
+     - 例如 plugin-wallet 执行链上交易，plugin-sql 写 DB
+
+  6. [Stage 3 输出验证]
+     → /packages/core/src/runtime/evaluator.ts: runEvaluator()
+     - 验证 planner 输出符合预期
+     - applyEvaluatorEffects() 执行后置副作用
+
+  7. [执行结果持久化]
+     → /packages/core/src/runtime.ts: createMemory()
+     - 内容 secret 脱敏后写入 DatabaseAdapter
+     - 触发 applyPipelineHooks("after_memory_persisted")
+
+  8. [Self-Improving：记忆检索增强下一轮]
+     → /packages/core/src/runtime.ts: searchMemories()
+     - 下一轮 composeState() 时向量搜索历史轨迹
+     - BM25 rerank: search.ts: BM25.search()
+     - 相关历史注入新轮 planner 上下文 → 形成闭环
+
+  === 异常分支 ===
+
+  3a. [Stage 1 → ignored]
+      → message-handler.ts: routeMessageHandlerOutput() 返回 "ignored"
+      → 直接 return，不进入 planner
+
+  4a. [工具调用失败]
+      → execute-planned-tool-call.ts: executeToolCall() 抛异常
+      → planner-loop.ts 捕获，记录错误到 trajectory
+      → LLM 拿到错误信息重新规划（内置 retry 逻辑）
+
+  4b. [达到最大轮次]
+      → planner-loop.ts: ChainingLoopConfig.maxIterations 触发
+      → 强制退出循环，返回当前 trajectory
+
+  最关键的一跳： runPlannerLoop() → /packages/core/src/runtime/planner-loop.ts
+
+  原因： 这是"自主性"真正发生的地方——LLM 在这里进行多轮工具选择和执行，决定是否
+  下单、如何调用链上操作。整个系统的智能性（决策质量、工具编排、错误恢复）都在这
+   1800 行里体现。Self-improving 闭环也通过 trajectory 记录 → createMemory()
+  持久化 → 下轮 searchMemories() 检索历史来实现。
+
+  ---
+  Step 3 — runPlannerLoop 跨文件依赖分析
+
+  分析目标： /packages/core/src/runtime/planner-loop.ts: runPlannerLoop()
+
+  1. 它直接 import 了哪些东西？
+
+  直接依赖：
+  - ./message-handler            → routeMessageHandlerOutput(),
+  parseMessageHandlerOutput()
+  - ./action-catalog             → buildActionCatalog(),
+  buildActionTierCatalog()
+  - ./action-retrieval           → getFilteredActions(), getRelevantActions()
+  - ./validated-model-call       → validateModelCall()  ← LLM 调用统一入口
+  - ./execute-planned-tool-call  → executeToolCall()    ← Action 执行
+  - ./response-grammar           → parseToolCallsFromResponse()
+  - ./trajectory-recorder        → recordTrajectoryStep(), finalizeTrajectory()
+  - ./planner-rendering          → renderPlannerPrompt()  ← 构建 System Prompt
+  - ./context-renderer           → renderContextObject()
+  - ../types/                    → PlannerLoopParams, PlannerLoopResult,
+  ToolDefinition
+  - @elizaos/logger              → logger.debug/info/error
+
+  2. 它被哪些地方调用？
+
+  调用者（精确到函数）：
+  - /packages/core/src/runtime.ts: processActions() 或消息处理主循环
+  - /packages/agent/src/api/agent-routes.ts: handleAgentMessage()（通过 runtime
+  间接）
+  - 测试文件: /packages/core/src/runtime/__tests__/planner-loop.test.ts
+
+  3. 如果改了入参/返回值/行为，哪里需要同步改？
+
+  如果修改 PlannerLoopParams（入参）：
+  - /packages/core/src/runtime.ts 中所有构造并传入该参数的地方
+  - /packages/agent/src/runtime/eliza.ts 中调用 runtime 的入口
+  - 类型定义 /packages/core/src/types/ 中对应接口
+
+  如果修改 PlannerLoopResult（返回值）：
+  - 所有消费 trajectory 字段的地方（特别是 runEvaluator() 的入参）
+  - Dashboard 展示轨迹的 /packages/ui/ 相关 hooks
+  - trajectory 持久化逻辑 /packages/agent/src/runtime/trajectory-*.ts
+
+  如果修改 maxIterations 逻辑（行为）：
+  - ChainingLoopConfig 类型定义
+  - 测试文件中 mock 了循环次数的用例
+
+  4. 项目里有没有"类似设计"的函数？对比差异
+
+  类似设计：runEvaluator() in /packages/core/src/runtime/evaluator.ts
+
+  ┌──────────┬─────────────────────────────┬────────────────────────────────┐
+  │   维度   │      runPlannerLoop()       │         runEvaluator()         │
+  ├──────────┼─────────────────────────────┼────────────────────────────────┤
+  │ 职责     │ 多轮工具调用，推进任务      │ 单轮输出验证，执行副作用       │
+  ├──────────┼─────────────────────────────┼────────────────────────────────┤
+  │ 循环     │ 有（最多 N 轮）             │ 无（单次调用）                 │
+  ├──────────┼─────────────────────────────┼────────────────────────────────┤
+  │ 工具调用 │ 是（核心功能）              │ 否（只读取 planner 结果）      │
+  ├──────────┼─────────────────────────────┼────────────────────────────────┤
+  │ 副作用   │ 通过 executeToolCall 产生   │ 通过 applyEvaluatorEffects     │
+  │          │                             │ 产生                           │
+  ├──────────┼─────────────────────────────┼────────────────────────────────┤
+  │ 返回     │ PlannerLoopResult（含       │ EvaluatorOutput（含通过/失败） │
+  │          │ trajectory）                │                                │
+  ├──────────┼─────────────────────────────┼────────────────────────────────┤
+  │ 设计意图 │ "做事"                      │ "验证是否做对了"               │
+  └──────────┴─────────────────────────────┴────────────────────────────────┘
+
+  差异核心：两者都是"有状态的 LLM 调用包装器"，但 planner
+  是执行引擎（能改变外部状态），evaluator
+  是审计引擎（只读评估，副作用受限）。这种 executor/auditor 分离
+  是架构中最有价值的模式。
+
+  ---
+  Step 4 — 3 个可借鉴到 AutoArb 的设计点
+
+  设计点 1：三阶段管道 + 职责隔离
+
+  解决什么问题： Agent
+  决策逻辑越写越大，最后变成一个几千行的"上帝函数"，impossible to test 或
+  replace 某一环节。
+
+  怎么落地到 AutoArb：
+  signal-handler.ts   → 只做信号路由（是否值得分析？）
+  analysis-loop.ts    → RAG 查询 + LLM 决策 + Polymarket 下单
+  trade-auditor.ts    → 验证成交状态 + 更新仓位记录
+  每层独立可测，每层可被替换（如换 LLM）而不影响其他层。
+
+  代码位置：
+  /packages/core/src/runtime/message-handler.ts (Stage 1) → planner-loop.ts
+  (Stage 2) → evaluator.ts (Stage 3)
+
+  ---
+  设计点 2：DatabaseAdapter 抽象层 + 批量优先接口
+
+  解决什么问题： 早期用 SQLite，后来要换 PostgreSQL 或向量
+  DB，改动牵一发动全身。
+
+  怎么落地到 AutoArb：
+  // 定义一次抽象接口
+  interface ITradeStore {
+    savePositions(positions: Position[]): Promise<UUID[]>   // 批量写
+    queryPositions(filters: PositionFilter): Promise<Position[]>
+    searchSimilarTrades(embedding: number[]): Promise<Position[]>  // 向量检索
+  }
+  // 实现1: SqliteTradeStore（开发用）
+  // 实现2: PostgresTradeStore（生产用）
+  // 实现3: InMemoryTradeStore（测试用）
+  切换存储层零改业务代码。
+
+  代码位置：
+  /packages/core/src/database.ts: DatabaseAdapter<DB> —
+  注意其方法全是批量签名（createMemories 不是 createMemory），这是为了减少 IO
+  轮次。
+
+  ---
+  设计点 3：createMemory 是唯一的 Secret 脱敏点
+
+  解决什么问题： Agent 运行中随时可能把私钥、API key 写入 log 或
+  DB，分散在各处的脱敏逻辑容易漏掉一处就造成泄漏。
+
+  怎么落地到 AutoArb：
+  // 所有写入 DB/日志的操作必须经过这一个函数
+  async function saveTradeRecord(record: TradeRecord): Promise<UUID> {
+    const cleaned = redactSecrets(record, getRegisteredSecrets())
+    // 只有这里能写 DB
+    return db.insert(trades).values(cleaned)
+  }
+  把"脱敏"和"持久化"强制绑定在同一个函数里，而不是各处手动调用 redact。
+
+  代码位置：
+  /packages/core/src/runtime.ts: createMemory() line 8287 — 关键：脱敏发生在写
+  DB 之前，且封装了 this.getSecretsForRedaction() 统一管理所有已注册 secret。
+
+✻ Cogitated for 3m 14s
