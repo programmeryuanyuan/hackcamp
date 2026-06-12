@@ -25,6 +25,8 @@
     <li><a href="#why-now--why-us">Why Now & Why Us</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
     <li><a href="#links">Links</a></li>
   </ol>
 </details>
@@ -139,6 +141,12 @@ graph TD
 
 ## Tech Stack
 
+### 核心技术栈
+
+[![Bun][Bun-badge]][Bun-url] [![TypeScript][TS-badge]][TS-url] [![React][React-badge]][React-url] [![Hono][Hono-badge]][Hono-url] [![Vite][Vite-badge]][Vite-url] [![Zod][Zod-badge]][Zod-url] [![Drizzle][Drizzle-badge]][Drizzle-url] [![Vitest][Vitest-badge]][Vitest-url] [![Cloudflare][CF-badge]][CF-url]
+
+### 详细说明
+
 | 层 | 技术 | 版本 | 为什么选它 |
 |----|------|------|----------|
 | **运行时** | Bun | latest | 比 Node 快 3x 启动；原生 TypeScript，零编译配置 |
@@ -187,6 +195,24 @@ graph TD
 - [ ] 移动端原生桥接（Android / iOS）完整覆盖
 - [ ] Agent 市场（一键发布 / 订阅 Agent）
 - [ ] 可视化 Agent 流程编辑器
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## License
+
+MIT License。详见 [`LICENSE`](LICENSE)。
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## Contact
+
+elizaOS 团队 — [@elizaos](https://twitter.com/elizaos) — hello@elizaos.ai
+
+项目主页：[https://github.com/elizaos/eliza](https://github.com/elizaos/eliza)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -243,3 +269,23 @@ bun run start
 - 💬 Discord：https://discord.gg/elizaos
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- MARKDOWN LINKS & BADGES -->
+[Bun-badge]: https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white
+[Bun-url]: https://bun.sh
+[TS-badge]: https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white
+[TS-url]: https://www.typescriptlang.org
+[React-badge]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://react.dev
+[Hono-badge]: https://img.shields.io/badge/Hono-E36002?style=for-the-badge&logo=hono&logoColor=white
+[Hono-url]: https://hono.dev
+[Vite-badge]: https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white
+[Vite-url]: https://vitejs.dev
+[Zod-badge]: https://img.shields.io/badge/Zod-3E67B1?style=for-the-badge&logo=zod&logoColor=white
+[Zod-url]: https://zod.dev
+[Drizzle-badge]: https://img.shields.io/badge/Drizzle-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black
+[Drizzle-url]: https://orm.drizzle.team
+[Vitest-badge]: https://img.shields.io/badge/Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white
+[Vitest-url]: https://vitest.dev
+[CF-badge]: https://img.shields.io/badge/Cloudflare_Workers-F38020?style=for-the-badge&logo=cloudflare&logoColor=white
+[CF-url]: https://workers.cloudflare.com

@@ -29,6 +29,8 @@
     <li><a href="#why-now--why-us">Why Now & Why Us</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
     <li><a href="#links">Links</a></li>
   </ol>
 </details>
@@ -142,6 +144,12 @@ graph TD
 
 ## Tech Stack
 
+### Built With
+
+[![Bun][Bun-badge]][Bun-url] [![TypeScript][TS-badge]][TS-url] [![React][React-badge]][React-url] [![Hono][Hono-badge]][Hono-url] [![Vite][Vite-badge]][Vite-url] [![Zod][Zod-badge]][Zod-url] [![Drizzle][Drizzle-badge]][Drizzle-url] [![Vitest][Vitest-badge]][Vitest-url] [![Cloudflare][CF-badge]][CF-url]
+
+### Details
+
 | Layer | Tech | Version | Why |
 |-------|------|---------|-----|
 | **Runtime** | Bun | latest | 3× faster startup than Node; native TypeScript, zero compile config |
@@ -190,6 +198,24 @@ LangChain is too academic. AutoGen ignores the plugin ecosystem. CrewAI skips We
 - [ ] Full mobile native bridges (Android / iOS)
 - [ ] Agent marketplace (publish / subscribe agents)
 - [ ] Visual agent flow editor
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## License
+
+Distributed under the MIT License. See [`LICENSE`](LICENSE) for more information.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## Contact
+
+elizaOS Team — [@elizaos](https://twitter.com/elizaos) — hello@elizaos.ai
+
+Project Link: [https://github.com/elizaos/eliza](https://github.com/elizaos/eliza)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -246,3 +272,23 @@ bun run start
 - 💬 Discord: https://discord.gg/elizaos
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- MARKDOWN LINKS & BADGES -->
+[Bun-badge]: https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white
+[Bun-url]: https://bun.sh
+[TS-badge]: https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white
+[TS-url]: https://www.typescriptlang.org
+[React-badge]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://react.dev
+[Hono-badge]: https://img.shields.io/badge/Hono-E36002?style=for-the-badge&logo=hono&logoColor=white
+[Hono-url]: https://hono.dev
+[Vite-badge]: https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white
+[Vite-url]: https://vitejs.dev
+[Zod-badge]: https://img.shields.io/badge/Zod-3E67B1?style=for-the-badge&logo=zod&logoColor=white
+[Zod-url]: https://zod.dev
+[Drizzle-badge]: https://img.shields.io/badge/Drizzle-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black
+[Drizzle-url]: https://orm.drizzle.team
+[Vitest-badge]: https://img.shields.io/badge/Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white
+[Vitest-url]: https://vitest.dev
+[CF-badge]: https://img.shields.io/badge/Cloudflare_Workers-F38020?style=for-the-badge&logo=cloudflare&logoColor=white
+[CF-url]: https://workers.cloudflare.com
